@@ -7,7 +7,7 @@ if __name__ == '__main__':
     print()
     salesDataDF = pd.read_csv('sales_16-19.csv')
     pd.set_option('display.max_rows', 500)
-    print('First 5 rows:')
+    print('First 5 rows of dataset :')
     print(salesDataDF.head())
     print()
 
@@ -23,13 +23,24 @@ if __name__ == '__main__':
         .groupby(['zip_code']).first()\
         .reset_index()
 
-    print('Product with most bottles sold per zip code:')
+    print('Product (item) with most bottles sold per zip code:')
     print(maxesDF)
     print()
     print('-------------------------------------------------------------------------------')
     print()
 
+    # Let's get sales per store
+    groupedStores = salesDataDF.groupby(['store_number'])
+    sales_perStore = groupedStores.agg({'sale_dollars': 'sum'})
 
+    # Reset the index
+    sales_perStore = sales_perStore.reset_index()
+
+    # Compute total sales and create a new column with percentage
+    sumSales = sum(sales_perStore['sale_dollars'])
+    sales_perStore["percent_of_total"] = (sales_perStore["sale_dollars"] / sumSales) * 100
+    print('Sales percentage per store :')
+    print(sales_perStore)
 
 
 
